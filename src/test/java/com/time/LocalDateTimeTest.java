@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * @author yangqing
@@ -65,6 +64,12 @@ public class LocalDateTimeTest {
     }
 
     @Test
+    public void test3(){
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println(now);
+    }
+
+    @Test
     public void test2(){
         String str="{\"taskcard\":{\"description\":\"测试不可描述\",\"task_id\":\"1265911632929361920\",\"title\":\"测试标题\",\"btn\":[{\"color\":\"blue\",\"name\":\"批准\",\"key\":\"yes\",\"is_bold\":true,\"replace_name\":\"已批准\"},{\"color\":\"red\",\"name\":\"驳回\",\"key\":\"no\",\"is_bold\":false,\"replace_name\":\"已驳回\"}],\"url\":\"https://www.baidu.com\"},\"agentid\":1000090,\"touser\":\"Bo.Zhang\",\"enable_duplicate_check\":0,\"duplicate_check_interval\":10000,\"accessToken\":\"7jWfNpZDllxQhejXzcFzZO9ilaUUDZI45Lfx3ftAhlCfTAX-nziPEEWAeqnblPEbEyF2Ox2tCaW62N-fWFmLlLCK__XdP2U_P9G1como3HDSyKxgzRTjPx1GSniEgIe0r-ebdOkAFh-b45X3jZ5OJPFMRhhH2WJR5Fb6hbCjI7ahOfpawt1bIytkLBp-qj7zB3X-zDDsMqu7idPfNlgvQg\",\"msgtype\":\"taskcard\",\"enable_id_trans\":0}";
         JSONObject object = JSON.parseObject(str);
@@ -72,5 +77,35 @@ public class LocalDateTimeTest {
         Object c = object.remove("accessToken");
         System.out.println("删除之后"+object);
     }
+
+
+    @Test
+    public void test4(){
+        LocalDate date = LocalDate.parse("2017-08-15");
+        //获取这个月的第一个周末的时间
+        System.out.println(date.with(TemporalAdjusters.dayOfWeekInMonth(1, DayOfWeek.SUNDAY)));//2017-08-06
+        //获取上个月的最后一周
+        System.out.println(date.with(TemporalAdjusters.dayOfWeekInMonth(0, DayOfWeek.SUNDAY)));//2017-07-30
+        //获取这个月的倒数第一个周末的时间
+        System.out.println(date.with(TemporalAdjusters.dayOfWeekInMonth(-1, DayOfWeek.SUNDAY)));//2017-08-27
+
+        //获取这个月的第一个周末的时间,上面的dayOfWeekInMonth更灵活,可以定义第几周
+        System.out.println(date.with(TemporalAdjusters.firstInMonth(DayOfWeek.SUNDAY)));//2017-08-06
+
+        //其底层调用的是
+//		  return TemporalAdjusters.dayOfWeekInMonth(1, dayOfWeek);
+
+        //明年的第一天
+        System.out.println(date.with(TemporalAdjusters.firstDayOfNextYear()));//2018-01-01
+        //获取下周5的时间
+        System.out.println(date.with(TemporalAdjusters.next(DayOfWeek.FRIDAY)));//2017-08-18
+        System.out.println(date.with(TemporalAdjusters.next(DayOfWeek.TUESDAY)));//2017-08-22,始终返回下周的某个时间
+        //获取周2时间
+        System.out.println(date.with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY)));//2017-08-15,如果当前时间刚好是星期三,那么就返回当前时间
+
+        // 获取本月最后一天
+        System.out.println(date.with(TemporalAdjusters.lastDayOfMonth()));//2017-08-31
+    }
+
 
 }
