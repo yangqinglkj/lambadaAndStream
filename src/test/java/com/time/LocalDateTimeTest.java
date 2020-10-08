@@ -2,12 +2,19 @@ package com.time;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author yangqing
@@ -71,6 +78,36 @@ public class LocalDateTimeTest {
         System.out.println("删除之前"+object);
         Object c = object.remove("accessToken");
         System.out.println("删除之后"+object);
+    }
+
+    @Test
+    public void test3() throws Exception{
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = df.parse("2020-10-08 12:00:00");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        long timestamp = cal.getTimeInMillis();
+        System.out.println(timestamp/1000);
+    }
+
+
+    @Test
+    public  void test4() throws Exception{
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear();
+        int monthValue = now.getMonthValue();
+        int dayOfMonth = now.getDayOfMonth();
+        int hour = now.getHour();
+
+        String hourStr = year +"-"+ monthValue +"-"+ dayOfMonth + " "+(hour-1)+":00:00";
+        System.out.println(hourStr);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = df.parse(hourStr);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        long timestamp = cal.getTimeInMillis();
+        System.out.println(timestamp/1000);
     }
 
 }
