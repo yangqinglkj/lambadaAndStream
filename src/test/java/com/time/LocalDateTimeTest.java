@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author yangqing
@@ -65,7 +67,7 @@ public class LocalDateTimeTest {
     }
 
     @Test
-    public void test3(){
+    public void test5(){
         LocalDateTime now = LocalDateTime.now();
         System.out.println(now);
     }
@@ -111,7 +113,7 @@ public class LocalDateTimeTest {
 
 
     @Test
-    public void test4(){
+    public void test6(){
         LocalDate date = LocalDate.parse("2017-08-15");
         //获取这个月的第一个周末的时间
         System.out.println(date.with(TemporalAdjusters.dayOfWeekInMonth(1, DayOfWeek.SUNDAY)));//2017-08-06
