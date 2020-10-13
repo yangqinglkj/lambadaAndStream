@@ -84,7 +84,7 @@ public class LocalDateTimeTest {
     @Test
     public void test3() throws Exception{
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = df.parse("2020-10-08 12:00:00");
+        Date date = df.parse("2020-10-06 01:00:00");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         long timestamp = cal.getTimeInMillis();
