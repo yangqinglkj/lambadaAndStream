@@ -1,12 +1,17 @@
 package com.watermark;
 
+import sun.font.FontDesignMetrics;
+import sun.misc.BASE64Encoder;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * @Author yq
@@ -87,9 +92,93 @@ public class WatermarkTest {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println("开始水印：");
-        new WatermarkTest().addWatermark("D:/qq.png", "D:/qqtest.png", "admin", "png");
-        System.out.println("水印完成。");
+    public static void main(String[] args)throws Exception {
+//        System.out.println("开始水印：");
+//        new WatermarkTest().addWatermark("D:/qq.png", "D:/qqtest.png", "admin", "png");
+//        System.out.println("水印完成。");
+        new WatermarkTest().stringToPng("admin",new File("D://test/test.png"));
+    }
+
+    private void stringToPng(String text,File outFile) throws IOException,FontFormatException {
+        //BaseFont base = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+
+        //Font font = new Font("STSong-Light", Font.PLAIN, 90);
+        InputStream is = this.getClass().getResourceAsStream("/font/simhei.ttf");
+        Font fontTemp = Font.createFont(Font.TRUETYPE_FONT,is);//返回一个指定字体类型和输入数据的font
+
+        Font font = fontTemp.deriveFont(Font.BOLD,30);
+
+        // 获取font的样式应用在输出内容上整个的宽高
+        int[] arr = getWidthAndHeight(text, font);
+        int width = arr[0];
+        int height = arr[1];
+
+        BufferedImage image = createImageWithText(text,width,height,font,Color.gray,0.8f);
+
+        // 输出png图片，formatName 对应图片的格式
+        ImageIO.write(image, "png", outFile);
+    }
+    /**
+     * 创建背景透明的文字图片
+     *
+     * @param str       文本字符串
+     * @param width     图片宽度
+     * @param height    图片高度
+     * @param font      设置字体
+     * @param fontColor 字体颜色
+     * @param alpha     文字透明度，值从0.0f-1.0f，依次变得不透明
+     */
+    private BufferedImage createImageWithText(String str, int width, int height, Font font, Color fontColor, float alpha) {
+        BufferedImage textImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = textImage.createGraphics();
+
+        //设置背景透明
+        textImage = g2.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+        g2.dispose();
+        g2 = textImage.createGraphics();
+
+        //开启文字抗锯齿
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        //设置字体
+        g2.setFont(font);
+        //设置字体颜色
+        g2.setColor(fontColor);
+        //设置透明度:1.0f为透明度 ，值从0-1.0，依次变得不透明
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        //计算字体位置：上下左右居中
+        FontRenderContext context = g2.getFontRenderContext();
+        LineMetrics lineMetrics = font.getLineMetrics(str, context);
+        FontMetrics fontMetrics = FontDesignMetrics.getMetrics(font);
+        float offset = (width - fontMetrics.stringWidth(str)) / 2;
+        float y = (height + lineMetrics.getAscent() - lineMetrics.getDescent() - lineMetrics.getLeading()) / 2;
+        //绘图
+        g2.drawString(str, (int) offset, (int) y);
+        //释放资源
+        g2.dispose();
+        return textImage;
+    }
+
+
+    private  int[] getWidthAndHeight(String text, Font font) {
+        Rectangle2D r = font.getStringBounds(text, new FontRenderContext(
+                AffineTransform.getScaleInstance(1, 1), false, false));
+        int unitHeight = (int) Math.floor(r.getHeight());//
+        // 获取整个str用了font样式的宽度这里用四舍五入后+1保证宽度绝对能容纳这个字符串作为图片的宽度
+        int width = (int) Math.round(r.getWidth()) + 1;
+        // 把单个字符的高度+3保证高度绝对能容纳字符串作为图片的高度
+        int height = unitHeight + 3;
+        return new int[]{width, height};
+    }
+
+    public int getPercent(float h,float w) {
+        int p = 0;
+        float p2 = 0.0f;
+        if (h > w) {
+            p2 = 1160 / h * 100;
+        } else {
+            p2 = 842 / w * 100;
+        }
+        p = Math.round(p2);
+        return p;
     }
 }
