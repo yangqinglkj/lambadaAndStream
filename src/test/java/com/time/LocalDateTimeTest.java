@@ -1,9 +1,13 @@
 package com.time;
 
+import com.entity.Area;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -65,11 +69,14 @@ public class LocalDateTimeTest {
         Long startTs = System.currentTimeMillis();
         System.out.println(startTs);
     }
-
+    @Resource
+    private Area area;
     @Test
     public void test5(){
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(now);
+//        LocalDateTime now = LocalDateTime.now();
+//        System.out.println(now);
+//        List<Map<String, String>> map = person.getMap();
+        System.out.println(area);
     }
 
     @Test
@@ -84,7 +91,7 @@ public class LocalDateTimeTest {
     @Test
     public void test3() throws Exception{
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = df.parse("2020-10-14 09:00:00");
+        Date date = df.parse("2020-11-05 11:00:00");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         long timestamp = cal.getTimeInMillis();

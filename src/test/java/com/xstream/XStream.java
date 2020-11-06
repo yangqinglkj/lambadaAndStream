@@ -1,5 +1,6 @@
 package com.xstream;
 
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
 /**
@@ -10,6 +11,9 @@ import org.junit.Test;
 public class XStream {
     @Test
     public void test(){
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key","key");
+        String key = jsonObject.getString("key1");
+        System.out.println(key);
     }
 }
