@@ -91,7 +91,7 @@ public class LocalDateTimeTest {
     @Test
     public void test3() throws Exception{
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = df.parse("2020-11-05 11:00:00");
+        Date date = df.parse("2020-12-04 00:00:00");
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         long timestamp = cal.getTimeInMillis();
@@ -145,6 +145,15 @@ public class LocalDateTimeTest {
 
         // 获取本月最后一天
         System.out.println(date.with(TemporalAdjusters.lastDayOfMonth()));//2017-08-31
+    }
+
+    @Test
+    public void test7(){
+        LocalDate startTime = LocalDate.of(2020,11,25);
+        LocalDate endTime = LocalDate.of(2020,11,29);
+        Duration duration = Duration.between(startTime, endTime);
+        long l = duration.toDays();
+        System.out.println(l);
     }
 
 
